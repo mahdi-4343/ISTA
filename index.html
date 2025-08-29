@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ISTA - Intelligent Screen Time Assistant</title>
+    <title>ISTA - Your Intelligent Screen Time Assistant</title>
     <meta
       name="description"
       content="ISTA - Your intelligent screen time assistant. Track app usage, set restrictions, and improve productivity with smart insights and focus tools."
@@ -12,9 +12,9 @@
       body {
         margin: 0;
         padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           sans-serif;
-        background: #0a0a0a;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
         color: #ffffff;
         display: flex;
         justify-content: center;
@@ -22,19 +22,81 @@
         min-height: 100vh;
         text-align: center;
       }
-      .loader {
+      .container {
+        max-width: 600px;
+        padding: 40px 20px;
+      }
+      .logo {
+        font-size: 3rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #00ff88, #00ccff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 20px;
+      }
+      .title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #ffffff;
+      }
+      .subtitle {
+        font-size: 1.2rem;
+        color: #a0a0a0;
+        margin-bottom: 40px;
+      }
+      .language-buttons {
         display: flex;
-        flex-direction: column;
-        align-items: center;
         gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .lang-btn {
+        padding: 15px 30px;
+        border: 2px solid #00ff88;
+        background: transparent;
+        color: #00ff88;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .lang-btn:hover {
+        background: #00ff88;
+        color: #0a0a0a;
+        transform: translateY(-2px);
+      }
+      .lang-btn.primary {
+        background: #00ff88;
+        color: #0a0a0a;
+      }
+      .lang-btn.primary:hover {
+        background: #00cc66;
+        border-color: #00cc66;
+      }
+      .flag {
+        font-size: 1.5rem;
+      }
+      .auto-redirect {
+        margin-top: 30px;
+        color: #666;
+        font-size: 0.9rem;
       }
       .spinner {
-        width: 40px;
-        height: 40px;
-        border: 3px solid #333;
-        border-top: 3px solid #00ff88;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #333;
+        border-top: 2px solid #00ff88;
         border-radius: 50%;
         animation: spin 1s linear infinite;
+        display: inline-block;
+        margin-right: 10px;
       }
       @keyframes spin {
         0% {
@@ -44,106 +106,64 @@
           transform: rotate(360deg);
         }
       }
-      .text {
-        color: #a0a0a0;
-        font-size: 16px;
-      }
     </style>
   </head>
   <body>
-    <div class="loader">
-      <div class="spinner"></div>
-      <div class="text">Redirecting to your preferred language...</div>
+    <div class="container">
+      <div class="logo">ISTA</div>
+      <h1 class="title">Your Intelligent Screen Time Assistant</h1>
+      <p class="subtitle">
+        Choose your preferred language / زبان مورد نظر خود را انتخاب کنید
+      </p>
+
+      <div class="language-buttons">
+        <a href="./fa/index.html" class="lang-btn primary">
+          <span class="flag">🇮🇷</span>
+          فارسی (Persian)
+        </a>
+        <a href="./en/index.html" class="lang-btn">
+          <span class="flag">🇺🇸</span>
+          English
+        </a>
+      </div>
+
+      <div class="auto-redirect">
+        <div class="spinner"></div>
+        Redirecting to Persian version in
+        <span id="countdown">5</span> seconds...
+      </div>
     </div>
 
     <script>
-      // Language detection and redirection
-      function detectLanguage() {
-        // Check for stored preference
-        const storedLang = localStorage.getItem('ista-language');
-        if (storedLang) {
-          return storedLang;
+      // Auto-redirect to Persian after 5 seconds
+      let countdown = 5;
+      const countdownElement = document.getElementById("countdown");
+
+      const timer = setInterval(() => {
+        countdown--;
+        countdownElement.textContent = countdown;
+
+        if (countdown <= 0) {
+          clearInterval(timer);
+          window.location.href = "./fa/index.html";
         }
+      }, 1000);
 
-        // Check browser language
-        const browserLang = navigator.language || navigator.userLanguage;
-        if (browserLang.startsWith('fa') || browserLang.startsWith('ar')) {
-          return 'fa';
-        }
-
-        // Default to English
-        return 'en';
+      // Check for stored language preference
+      const storedLang = localStorage.getItem("ista-language");
+      if (storedLang) {
+        window.location.href =
+          storedLang === "fa" ? "./fa/index.html" : "./en/index.html";
       }
 
-      function redirectToLanguage() {
-        const language = detectLanguage();
-        const targetPath =
-          language === 'fa' ? './fa/index.html' : './en/index.html';
-
-        // Store the preference
-        localStorage.setItem('ista-language', language);
-
-        // Redirect after a short delay
-        setTimeout(() => {
-          window.location.href = targetPath;
-        }, 1000);
-      }
-
-      // Handle manual language switching
-      function switchLanguage(lang) {
-        localStorage.setItem('ista-language', lang);
-        const targetPath =
-          lang === 'fa' ? './fa/index.html' : './en/index.html';
-        window.location.href = targetPath;
-      }
-
-      // Add language switcher buttons
-      function addLanguageSwitcher() {
-        const switcher = document.createElement('div');
-        switcher.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                display: flex;
-                gap: 10px;
-                z-index: 1000;
-            `;
-
-        const enBtn = document.createElement('button');
-        enBtn.textContent = 'English';
-        enBtn.style.cssText = `
-                padding: 8px 16px;
-                background: #1e1e1e;
-                border: 1px solid #333;
-                color: #ffffff;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 14px;
-            `;
-        enBtn.onclick = () => switchLanguage('en');
-
-        const faBtn = document.createElement('button');
-        faBtn.textContent = 'فارسی';
-        faBtn.style.cssText = `
-                padding: 8px 16px;
-                background: #1e1e1e;
-                border: 1px solid #333;
-                color: #ffffff;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 14px;
-            `;
-        faBtn.onclick = () => switchLanguage('fa');
-
-        switcher.appendChild(enBtn);
-        switcher.appendChild(faBtn);
-        document.body.appendChild(switcher);
-      }
-
-      // Initialize
-      document.addEventListener('DOMContentLoaded', () => {
-        addLanguageSwitcher();
-        redirectToLanguage();
+      // Store language preference when user clicks
+      document.querySelectorAll(".lang-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const lang = e.target.closest(".lang-btn").href.includes("/fa/")
+            ? "fa"
+            : "en";
+          localStorage.setItem("ista-language", lang);
+        });
       });
     </script>
   </body>
